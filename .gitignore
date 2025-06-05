@@ -1,0 +1,17 @@
+# Arduino build files
+build/
+*.hex
+*.elf
+
+# IDE specific files
+.vscode/
+*.swp
+.DS_Store
+
+# Dependencies
+node_modules/
+__pycache__/
+
+# Environment specific
+*.env
+secrets.h
