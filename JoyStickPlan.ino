@@ -1,6 +1,6 @@
 /**
  * @date 05-06-2025
- * @version 1.0.0-beta.1 (rev0)
+ * @version 1.0.1 (rev0)
  * @author stndnt-c1 [https://github.com/stdnt-c1]
  * 
  * @file JoyStickPlan.ino
@@ -52,6 +52,31 @@
  *   > To determine the values of the resistors, we will use the formula: Vout = Vin * (R2 / (R1 + R2)), where Vout is the output voltage, Vin is the input voltage, R1 is the resistor connected to the input voltage, and R2 is the resistor connected to the ground.
  *   > Meaning, we will use 2 resistors of 1k and 2k to convert the 5v output to 3.3v input for the ESP32.
  *   > The highest value resistor (2k) will be connected to the 5v output, and the lowest value resistor (1k) will be connected to the ground. The output of the voltage divider will be connected to the ESP32's analog input pin.
+ *   > But that solution only works if we assume it's a direct I/O switch, in this case, it has 3 outputs, X-axis, Y-axis, and the push button, each output 5v when pressed.
+ *   > So, to solve this, we need to refine the approach a bit, the following is a simple graph to illustrate the setup:
+ *   > 
+ *   >  [+5V]           [GND]
+ *   >    |               |
+ *   >    |              [1k]
+ *   >    |               |
+ *   >    +---------------+
+ *   >    |               |
+ *   >    |               |
+ *   >    |KY-023 Joystick|
+ *   >    |               |
+ *   >    |               |
+ *   >    ++------+------++
+ *   >     |      |      |
+ *   >   [VRX]  [VRY]   [SW]
+ *   >     |      |      |
+ *   >    [2k]   [2k]   [2k]
+ *   >     |      |      |
+ *   >    [D]    [D]    [D]  -> Optional Diode for added headroom (-0.2v ~ -0.3v drop), though not strictly required.
+ *   >     |      |      |
+ *   >   [GPIO] [GPIO] [GPIO]
+ *   >
+ *   > In this setup, we instead fed the 5v directly to the module, while each output pin (VRX, VRY, SW) is connected to a 2k resistor that is then connected to the ESP32's GPIO pins.
+ * 
  * - Each push buttons can operates at whatever voltage, but we will use 3.3v for the ESP32. The push buttons will be connected to the ESP32's digital input pins.
  *   > Issue here is that, there are too many buttons (8 in total), and the ESP32 will run out of GPIO pins to use before we could implement the rest of the components.
  *   > To solve this, we will use a resistor ladder to combine the buttons into a single analog input pin.
@@ -79,20 +104,27 @@
  *   > For example, if Button 1 is pressed, the output will be 3.3v, if Button 2 is pressed, the output will be 2.2v, if Button 3 is pressed, the output will be 1.65v, and so on.
  *   > This is the most standard way of implementing a resistor ladder for buttons, and it will work with the ESP32's analog input pins.
  *   > And it does saves us GPIO pins, as we only need 2 analog input pins for the 8 buttons.
+ * 
  * - The limit switches that used as trigger buttons will be connected to the ESP32's digital input pins.
  *   > The limit switches doesn't require any voltage divider or resistor ladder, as they are just simple switches that will connect the input pin to ground when pressed.
  *   > Another reason for that is due to the fact that we will be using 2 fingers for the trigger, adn simultanous input is to be expected, so using independent GPIO pins for each switch is necessary.
+ * 
  * - The 18650 Battery Shield will be used to power the ESP32 and the other components.
  *   > The shield will provide 3.3v and 5v power simultaneously to the joystick.
  *   > The ESP32 will be powered by the 3.3v output, and the KY-023 Joystick will be powered by the 5v output.
+ * 
  * - The 18650 Battery will be used to power the joystick.
  *   > The battery will be connected to the 18650 Battery Shield, and it will provide power to the joystick.
+ * 
  * - The 0.66-inch White OLED Display Shield will be used to show information on the joystick.
  *   > The display will be connected to the ESP32's I2C pins, and it will be used to show information such as the joystick position, battery level, and other information.
+ * 
  * - The NRF24L01+PA/LNA RF Module will be used to communicate with the PC.
  *   > The module will be connected to the ESP32's SPI pins, and it will be used to send and receive data from the PC.
+ * 
  * - The Passive Buzzer will be used to provide audio feedback for the joystick.
  *   > The buzzer will be connected to the ESP32's PWM pin, and it will be used to provide audio feedback for the joystick.
+ * 
  * - The 2S Battery Indicator will be used to indicate the battery level of the joystick.
  *   > This one requires us to directly connect the wires onto the battery, as the shield does not have any battery indicator.
  *   > The indicator will be connected to the battery, and it will be used to indicate the battery level of the joystick.
