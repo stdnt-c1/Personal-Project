@@ -1,5 +1,7 @@
 # ESP32 Mini Kit has these following pin
 
+<img src="images\miniKit-pinout.pngl" alt="ESP32 Mini Kit">
+
 ## Inner Side:
 
 __Note:__ Assuming viewed from below with the USB side pointing downwards.
