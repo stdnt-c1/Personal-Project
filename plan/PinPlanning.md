@@ -4,7 +4,7 @@
 
 ## Inner Side:
 
-__Note:__ Assuming viewed from below with the USB side pointing downwards.
+> __Note:__ Assuming viewed from below with the USB side pointing downwards.
 
 |  LEFT  | RIGHT |
 |--------|-------|
@@ -19,7 +19,7 @@ __Note:__ Assuming viewed from below with the USB side pointing downwards.
 | TD0 | TCK |
 | SD0 | SD3 |
 
-> __Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png). 
+> __Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png). <br>
 > __Note:__ The highlighted pin are adapted `D1 MINI` default pinout to ensure compatbility with their shields. 
 
 ## Outer Side
