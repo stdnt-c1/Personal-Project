@@ -145,5 +145,5 @@ These pins are still available on your Mini Kit for additional components:
 - **Available**: 3 pins
 - **Avoid**: 7 pins (strapping/flash/UART)
 
-> __Note:__ For the missing/unsigned Mini Kit GPIO, you can use any generally safe pins from the available list above.
+> __Note:__ For the missing/unsigned Mini Kit GPIO, you can use any generally safe pins from the available list above. <br>
 > __Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png).
