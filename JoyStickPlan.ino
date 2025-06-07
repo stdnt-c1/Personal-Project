@@ -56,21 +56,21 @@
  *   > So, to solve this, we need to refine the approach a bit, the following is a simple graph to illustrate the setup:
  *   > 
  *   >  [+5V]           [GND]
- *   >    |               |
+ *   >    |               |  
  *   >    |              [1k]
- *   >    |               |
- *   >    +---------------+
- *   >    |               |
- *   >    |               |
- *   >    |KY-023 Joystick|
- *   >    |               |
- *   >    |               |
- *   >    ++------+------++
- *   >     |      |      |
- *   >   [VRX]  [VRY]   [SW]
- *   >     |      |      |
- *   >    [2k]   [2k]   [2k]
- *   >     |      |      |
+ *   >    |               |  
+ *   >    +---------------+  
+ *   >    |               |  
+ *   >    |               |  
+ *   >    |KY-023 Joystick|  
+ *   >    |               |  
+ *   >    |               |  
+ *   >    ++------+------++  
+ *   >     |      |      |   
+ *   >   [VRX]  [VRY]   [SW] 
+ *   >     |      |      |   
+ *   >    [2k]   [2k]   [2k] 
+ *   >     |      |      |   
  *   >    [D]    [D]    [D]  -> Optional Diode for added headroom (-0.2v ~ -0.3v drop), though not strictly required.
  *   >     |      |      |
  *   >   [GPIO] [GPIO] [GPIO]
