@@ -144,6 +144,6 @@ GitHub: [https://github.com/stdnt-c1](https://github.com/stdnt-c1)
 Project version: **v1.0.1-rev0**  
 Date: **06-05-2025**
 
-[Abstract Planner](JoyStickPlan.ino)
-[Pin Mapping](PinPlanning.md)
+- [Abstract Planner](plan/JoyStickPlan.ino)
+- [Pin Mapping](plan/PinPlanning.md)
 ---

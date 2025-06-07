@@ -1,6 +1,6 @@
 # ESP32 Mini Kit has these following pin
 
-<img src="images\miniKit-pinout.pngl" alt="ESP32 Mini Kit">
+<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png" alt="ESP32 Mini Kit" width="35%" height="35%">
 
 ## Inner Side:
 
@@ -19,7 +19,7 @@ __Note:__ Assuming viewed from below with the USB side pointing downwards.
 | TD0 | TCK |
 | SD0 | SD3 |
 
-__Note:__ Refer to [image](images\miniKit-pinout.png). 
+__Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png). 
 __Note:__ The highlighted pin are adapted `D1 MINI` default pinout to ensure compatbility with their shields. 
 
 ## Outer Side
@@ -39,7 +39,7 @@ __Note:__ Assuming viewed from below with the USB side pointing downwards.
 | SD1 | SD2 |
 | CLK | CMD |
 
-__Note:__ Refer to [image](images\miniKit-pinout.png). 
+__Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png). 
 
 ## Pin Name Explanation
 
@@ -146,4 +146,4 @@ These pins are still available on your Mini Kit for additional components:
 - **Avoid**: 7 pins (strapping/flash/UART)
 
 __Note:__ For the missing/unsigned Mini Kit GPIO, you can use any generally safe pins from the available list above.
-__Note:__ Refer to [image](images\miniKit-pinout.png).
+__Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png).
