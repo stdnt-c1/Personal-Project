@@ -4,9 +4,9 @@
 * Starting out <br>
 What's tthe fun in having a joystick but not constructing it yourself? DIY your way into creating it.
 Here for i've added some approaches of how i will be starting this project, such as follows:
-+ Listing components on hands
-+ Creating abstract wiring
-+ Mkaing some considerations
+  + Listing components on hands
+  + Creating abstract wiring
+  + Mkaing some considerations
 
 I've already constructing some possible shapes of the joystick while at it and plan the buttons.
 
