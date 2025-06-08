@@ -22,3 +22,104 @@ Now, i also attempted to construct the joystick by making some holes for the M3 
 But i've done something wrong, i don't know how to place the trigger pins to be comfortably usable, i'll think about that later.
 Due to protoboard and buttons size constraints, i choose to make the dominant side to have the linear button layout while the other side have the D-pad/cross button layout.
 Next i might started soldering them since the structure and layout already in place.
+
+## LOG-4 | 08/06/25 | Resistive Divider and Revision
+Previously, our joystick diagram are as follows:
+```
+
+[+5V]           [GND]
+  |               |  
+  |              [1k]
+  |               |  
+  +---------------+  
+  |               |  
+  |               |  
+  |KY-023 Joystick|  
+  |               |  
+  |               |  
+  ++------+------++  
+   |      |      |   
+ [VRX]  [VRY]   [SW] 
+   |      |      |   
+  [2k]   [2k]   [2k] 
+   |      |      |   
+  [D]    [D]    [D]  -> Optional Diode
+   |      |      |
+ [GPIO] [GPIO] [GPIO]
+
+```
+
+But it seems to be wrong because the output to GPIO weren't isolated, the following diagram are the simplified visualizations of our current divider:
+```
+[+5V]----+
+         |
+       [VRX]
+         |
+       [2kΩ]
+         |
+       [GPIO] ← BAD: Without a lower leg to GND, this is not a proper divider
+         |
+       [1kΩ]
+         |
+       GND
+```
+
+And the revised one are as follows:
+```
+Joystick Output (e.g., VRX)
+       |
+      [10kΩ]  ← R1
+       |
+     [GPIO]   ← ESP32 analog input
+       |
+      [20kΩ]  ← R2
+       |
+      GND
+```
+
+In assumptions is that the Joystick will output direct 0-5v signal, but the signal are fed back to the Joystick itself, meaning improper divider. In short, we revised it to be as follows:
+```
+[+5V]---+ +---[GND] ← Joystick VCC adn GND
+        | |
+       [VRX]
+         |
+       [10kΩ] ← 2k to 10k
+         |
+       [GPIO] 
+         |
+       [20kΩ] ← 1k to 20k
+         |
+        GND ← ESP GND
+```
+
+Isolating the power to route back to ESP and not to Joystick GND, the flow as follows:
+```
+  JOYSTICK------------------+
+     |                      |
+SIGNAL_OUTPUT               |
+     |                      |
+     +-----------+          |
+     |           |          |
+  ESP_GPIO    ESP_GND    ESP_GND
+```
+
+This because previously we tried to do voltage divider by reusing the Joystick GND for the Divider GND, where in practice, all grounds should be common to themself. But it doesn't mean we were required to use individual GND for this purpose, the only issue is that we were just routing the power back to the joystick instead of the ESP common, which results in improper voltage divider.
+
+In essence, instead of this:
+```
+   JOYSTICK------+
+      |          |
+      | ← VCC    | ← GND
+      |          |
+     ESP---------+
+```
+Where connection are flowing through the same line, we need this:
+```
+   JOYSTICK------+
+      |          |
+      | ← VCC    | 
+      +----+     |
+      |    |     |
+     ESP  GND1  GND2
+```
+Where the line is dedicated, but it doesn't mean you need separate common ground for them. You can wire _GND1_ and _GND2_ together as the common base, but **don't** make it flow through the module.
