@@ -1,7 +1,7 @@
 # Project Progress Log
 
 ## LOG-1 | 05/06/25 | Abstract Planning
-* Starting out
+* Starting out <br>
 What's tthe fun in having a joystick but not constructing it yourself? DIY your way into creating it.
 Here for i've added some approaches of how i will be starting this project, such as follows:
 + Listing components on hands
@@ -11,13 +11,13 @@ Here for i've added some approaches of how i will be starting this project, such
 I've already constructing some possible shapes of the joystick while at it and plan the buttons.
 
 ## LOG-2 | 06/06/25 | Refining the Plan
-* First prototype
+* First prototype <br>
 I noticed i've missed some issue regarding the KY-023 signal output handling, where i fed it 5v yet didn't apply the correct 3.3v voltage divider for it, so i fixed that and added some simple visualizations.
 Along with that, i also experiment further the joystick, but it came out too bulky, and i was too lazy to pickup my power tools becuase it's late night already.
 Some of the small components have arrived, so i guess i'll continue later.
 
 ## LOG-3 | 07/06/25 | Constructing the Base
-* Initial structure
+* Initial structure <br>
 While at it, i choose to map the pinout and review again the approach, and i do realizes that some of my input might interfere with the bootup of the ESP32.
 I've made a modifications where for some specific pins, i connect it to the limit/micro switch to NO to get the pin HIGH at boot to avoid issue.
 Since i choose NRF24L01 as the primary communication, i will disable WiFi and BLE features on the ESP32 in case of interference on some of the pins.
@@ -27,7 +27,7 @@ Due to protoboard and buttons size constraints, i choose to make the dominant si
 Next i might started soldering them since the structure and layout already in place.
 
 ## LOG-4 | 08/06/25 | Resistive Divider and Revision
-* Joystick diagram and wiring revision (rev-1)
+* Joystick diagram and wiring revision (rev-1) <br>
 Previously, our joystick diagram are as follows:
 ```
 
@@ -143,7 +143,7 @@ Where connection are flowing through the same line, we need this:
 ```
 Where the line is dedicated, but it doesn't mean you need separate common ground for them. You can wire _GND1_ and _GND2_ together as the common base, but **don't** make it flow through the module.
 
-* NRF24L01+PA/LNA protection plan
+* NRF24L01+PA/LNA protection plan <br>
 I did mentioned that we have **100nF Ceramic Capacitor**, so we'll use that to as a filter for our RF modules, currently we have the RF module wired as follows:
 ```
   NRF24L01_VCC----+
@@ -168,5 +168,5 @@ But that's not enough, considering RF modules, especially NRF24L01 operates at 3
 
 By wiring both **Electrolytic Capacitor** and **Ceramic Capacitor** in parallel with the power input to ground, we essentially creates an additional power bank and robust filter for both HIGH noise and LOW noise going into the NRF24L01 module.
 
-* ESP32 central capacitor filter
+* ESP32 central capacitor filter <br>
 Current ESP32 state is as shown in the [picture](https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/wiring.jpg), and if our RF module has extra ceramic capacitor, so why wouldn't we apply the same to the bulk capacitor on our ESP32? And so i did add another **100nF 50V** in parallel, the same wiring as the RF module.
