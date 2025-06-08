@@ -1,4 +1,4 @@
-# Actual Implemntation Approach
+# Actual Implementation Approach
 
 <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/back-view.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
 <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/front-view.jpg" alt="Joystick Core Prototype - FORNT" width="35%" height="35%">
