@@ -1,20 +1,23 @@
 # Project Progress Log
 
 ## LOG-1 | 05/06/25 | Abstract Planning
+* Starting out
 What's tthe fun in having a joystick but not constructing it yourself? DIY your way into creating it.
 Here for i've added some approaches of how i will be starting this project, such as follows:
-- Listing components on hands
-- Creating abstract wiring
-- Mkaing some considerations
++ Listing components on hands
++ Creating abstract wiring
++ Mkaing some considerations
 
 I've already constructing some possible shapes of the joystick while at it and plan the buttons.
 
 ## LOG-2 | 06/06/25 | Refining the Plan
+* First prototype
 I noticed i've missed some issue regarding the KY-023 signal output handling, where i fed it 5v yet didn't apply the correct 3.3v voltage divider for it, so i fixed that and added some simple visualizations.
 Along with that, i also experiment further the joystick, but it came out too bulky, and i was too lazy to pickup my power tools becuase it's late night already.
 Some of the small components have arrived, so i guess i'll continue later.
 
 ## LOG-3 | 07/06/25 | Constructing the Base
+* Initial structure
 While at it, i choose to map the pinout and review again the approach, and i do realizes that some of my input might interfere with the bootup of the ESP32.
 I've made a modifications where for some specific pins, i connect it to the limit/micro switch to NO to get the pin HIGH at boot to avoid issue.
 Since i choose NRF24L01 as the primary communication, i will disable WiFi and BLE features on the ESP32 in case of interference on some of the pins.
@@ -24,6 +27,7 @@ Due to protoboard and buttons size constraints, i choose to make the dominant si
 Next i might started soldering them since the structure and layout already in place.
 
 ## LOG-4 | 08/06/25 | Resistive Divider and Revision
+* Joystick diagram and wiring revision (rev-1)
 Previously, our joystick diagram are as follows:
 ```
 
@@ -92,6 +96,21 @@ In assumptions is that the Joystick will output direct 0-5v signal, but the sign
         GND ← ESP GND
 ```
 
+This is the similar case of implementation with the LDR sensor where we instead read the value in between instead of straight,
+```
+  [LDR_SENSOR]
+    |      |
+    |      |
+    |     VCC
+    |
+    +--- GPIO
+    |
+  [10k]
+    |
+   GND
+```
+> __NOTE:__ The above diagram is an LDR Sensor wiring example for **Arduino Uno R3** and mentioned only as a reference.
+
 Isolating the power to route back to ESP and not to Joystick GND, the flow as follows:
 ```
   JOYSTICK------------------+
@@ -123,3 +142,31 @@ Where connection are flowing through the same line, we need this:
      ESP  GND1  GND2
 ```
 Where the line is dedicated, but it doesn't mean you need separate common ground for them. You can wire _GND1_ and _GND2_ together as the common base, but **don't** make it flow through the module.
+
+* NRF24L01+PA/LNA protection plan
+I did mentioned that we have **100nF Ceramic Capacitor**, so we'll use that to as a filter for our RF modules, currently we have the RF module wired as follows:
+```
+  NRF24L01_VCC----+
+                  |
+                  |
+            [2200uF 16V]
+                  |
+                  |
+  NRF24L01_GND----+
+```
+
+But that's not enough, considering RF modules, especially NRF24L01 operates at 3.3v and slight interference would and could brick it and power draw peaked at high power, having bulk capacitor alone is not enough since even though it offers additonal power during peak operations, it's still has the possibilty to carry electrical noise, so we need ceramic capacitor which significantly has lower ESR to filter out low noise. Now the diagram looks like this:
+```
+  NRF24L01_VCC----+-----------+
+                  |           |
+                  |           |
+            [2200uF 16V]   [100nF 50V]
+                  |           |
+                  |           |
+  NRF24L01_GND----+-----------+
+```
+
+By wiring both **Electrolytic Capacitor** and **Ceramic Capacitor** in parallel with the power input to ground, we essentially creates an additional power bank and robust filter for both HIGH noise and LOW noise going into the NRF24L01 module.
+
+* ESP32 central capacitor filter
+Current ESP32 state is as shown in the [picture](https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/wiring.jpg), and if our RF module has extra ceramic capacitor, so why wouldn't we apply the same to the bulk capacitor on our ESP32? And so i did add another **100nF 50V** in parallel, the same wiring as the RF module.
