@@ -197,7 +197,6 @@ As you can see from the [front view](https://github.com/stdnt-c1/Personal-Projec
 
 * Revised GPIO Pin Assignment (Post-LOG-5)
 Following the design decisions, we have revised the pin planning from the existing [planner](https://github.com/stdnt-c1/Personal-Project/blob/main/plan/PinPlanning.md) into the following configurations:
-```
 | Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                              |
 | ---------------------- | ------------------- | ---------- | -------------- | ----------------------- | ---------------------------------- |
 | **Joystick 1 (Left)**  | VRX                 | GPIO36     | SVP            | ADC1                    | Via voltage divider                |
@@ -223,6 +222,5 @@ Following the design decisions, we have revised the pin planning from the existi
 |                        | SCK                 | GPIO18     | IO18           | SPI                     |                                    |
 | **Buzzer**             | PWM Output          | GPIO25     | IO25           | PWM Digital Output      |                                    |
 | **Mode Switch**        | Program/Live toggle | GPIO14     | TMS            | Digital (INPUT\_PULLUP) | Requires manual reset after change |
-```
 
 With this, we've used up all of our **Safe General-purpose GPIO** pins available for the project, and any further add-ons or implementation to be physically added should involve **I2C IO Expander** or **Shift Register** to control the extra I/O. For this project, it's enough of them. What's left now os to review again the planning and start the actual implementation as per our considerations and modification, but for today, i will stop here since i need to gather the requirements first.
