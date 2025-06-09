@@ -322,6 +322,34 @@ Based on that list, we'll use **2N7000** since it's more fitting, you can use th
      |                                    
     [S]                                   
      |                                    
-     +----------+------[BUTTONS_VCC]----[GND]
+     +-------------[BUTTONS_VCC]----[GND]
   ```
   > __NOTE:__ **D** stands for **Drain**, **G** stands for **Gate**, **S** stands for **Source**.
+
+* Revised GPIO Pin Assignment
+  
+| Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                                      |
+| ---------------------- | ------------------- | ---------- | -------------- | ----------------------- | ------------------------------------------ |
+| **Joystick 1 (Left)**  | VRX                 | GPIO36     | SVP            | ADC1                    | Voltage divider required (0–5V → 0–3.3V)   |
+|                        | VRY                 | GPIO39     | SVN            | ADC1                    | Voltage divider required                   |
+|                        | SW                  | GPIO27     | IO27           | Digital (INPUT\_PULLUP) |                                            |
+| **Joystick 2 (Right)** | VRX                 | GPIO34     | IO34           | ADC1                    | Voltage divider required                   |
+|                        | VRY                 | GPIO35     | IO35           | ADC1                    | Voltage divider required                   |
+|                        | SW                  | GPIO26     | IO26           | Digital (INPUT\_PULLUP) |                                            |
+| **Push Buttons**       | Button 1            | GPIO32     | IO32           | Digital (INPUT\_PULLUP) | Formerly ladder input                      |
+|                        | Button 2            | GPIO33     | IO33           | Digital (INPUT\_PULLUP) | Formerly ladder input                      |
+|                        | Button 3            | GPIO0      | IO0            | Digital (INPUT\_PULLUP) | Strapping pin – protected by MOSFET gating |
+|                        | Button 4            | GPIO2      | IO2            | Digital (INPUT\_PULLUP) | Strapping pin – protected by MOSFET gating |
+|                        | Button 5            | GPIO4      | IO4            | Digital (INPUT\_PULLUP) |                                            |
+|                        | Button 6            | GPIO5      | IO5            | Digital (INPUT\_PULLUP) |                                            |
+|                        | Button 7            | GPIO15     | TD0            | Digital (INPUT\_PULLUP) | Newly used                                 |
+|                        | Button 8            | GPIO13     | TCK            | Digital (INPUT\_PULLUP) | Newly used                                 |
+| **OLED Display**       | SDA                 | GPIO21     | IO21           | I2C                     |                                            |
+|                        | SCL                 | GPIO22     | IO22           | I2C                     |                                            |
+| **NRF24L01+PA/LNA**    | CE                  | GPIO16     | IO16           | Digital                 |                                            |
+|                        | CSN                 | GPIO17     | IO17           | Digital                 |                                            |
+|                        | MOSI                | GPIO23     | IO23           | SPI                     |                                            |
+|                        | MISO                | GPIO19     | IO19           | SPI                     |                                            |
+|                        | SCK                 | GPIO18     | IO18           | SPI                     |                                            |
+| **Buzzer**             | PWM Output          | GPIO25     | IO25           | Digital (PWM)           |                                            |
+| **Button Power Gate**  | IRF740 Gate Control | GPIO14     | TMS            | Digital (Output)        | Enables button power after boot            |
