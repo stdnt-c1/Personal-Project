@@ -309,7 +309,7 @@ Based on that list, we'll use **2N7000** since it's more fitting, you can use th
       ```
       > __NOTE:__ For IRF740 specifically: **G-D-S** (Gate-Drain-Source) from left to right.
 
-  * Project wiring
+  * Project wiring <br>
   And so, for the project, we simply just need to wire it like this:
   ```
      +------[BATTERY 3.3V]
