@@ -225,3 +225,103 @@ Following the design decisions, we have revised the pin planning from the existi
 | **Mode Switch**        | Program/Live toggle | GPIO14     | TMS            | Digital (INPUT\_PULLUP) | Requires manual reset after change |
 
 With this, we've used up all of our **Safe General-purpose GPIO** pins available for the project, and any further add-ons or implementation to be physically added should involve **I2C IO Expander** or **Shift Register** to control the extra I/O. For this project, it's enough of them. What's left now os to review again the planning and start the actual implementation as per our considerations and modification, but for today, i will stop here since i need to gather the requirements first.
+
+## LOG-6 | 10/06/25 | Bootup Gate Protection
+* Replaced Program/Live Switch with Automatic Button Isolation <br>
+During testing, I realized the manual **Program/Live Mode switch** was redundant and added user friction. Additionally, several of my button inputs are connected to **strapping-sensitive GPIOs** like `GPIO0` and `GPIO2`, which can **interfere with ESP32 boot behavior** if pulled LOW during startup.
+
+To resolve both concerns, I redesigned the button input system using a **hardware gating approach**:
+
+* All **button VCC lines** are routed through an **N-channel MOSFET**.
+* The **MOSFET gate** is controlled by the ESP32 using **GPIO14**.
+* On boot, the gate remains LOW, **keeping the buttons disconnected** from power.
+* After boot, the firmware sets GPIO14 HIGH, **enabling all buttons simultaneously**.
+
+This eliminates startup issues and makes the boot process **clean and automatic**, without requiring users to flip any switches.
+
+```cpp
+// Safe power gating for all buttons post-boot
+#define BTN_POWER_GATE 14
+void setup() {
+  pinMode(BTN_POWER_GATE, OUTPUT);
+  digitalWrite(BTN_POWER_GATE, LOW);  // Keep buttons off
+  delay(500);                          // Allow boot process to complete
+  digitalWrite(BTN_POWER_GATE, HIGH); // Enable all buttons
+}
+```
+> __NOTE:__ The above is a simple example of the protection, use a proper method for the safe activation.
+
+This change freed up the physical switch previously used for mode toggling and streamlined the wiring for better long-term maintenance.
+
+* MOSFETs Choice and Wiring <br>
+While **IRF740** is a popular, widely available MOSFET in the market, the gate threshold for them are quite high, around **2V-4V**, even though our ESP32 GPIO can drive, i would like to have a smaller ones, for that, i've listed some common choices as follows:
+  + **2N7000** *0.8V~3V | Current Cap. ~200mA continuous, ~800mA pulsed*
+  + **BS170** *0.8V~3V | Current Cap. ~500mA continous, ~1200mA pulsed*
+  + **IRLZ44N** *1V~2V | Current Cap. ~47A*
+
+Based on that list, we'll use **2N7000** since it's more fitting, you can use the other or even uses the previous IRF740 MOSFET for this, but i'll choose 2N7000 for this one, you could even uses IRLZ44N, though 47A is rather overkill for this project, but not prohibited anyway, BS170 guarantee you a logic level activation since their threhold are very low.
+
+  + MOSFET Wiring <br>
+  Some of you may be confused of how to determine the MOSFET wiring, here's some basic example for you and the wiring for the project:
+
+    - **TO-92 Package (_Half-circle shape_)** <br>
+    Standard orientation to determine the pinout for this kind of MOSFET is with the **flat side facing you** and the **leads/pin facing down**.
+
+    Examples:
+
+      - **2N7000 (Most Common)** <br>
+      ```
+       [ Curved Side ]
+        S     G     D
+        |     |     |
+      Source-Gate-Drain
+        [ Flat Side]
+      ```
+      > __NOTE:__ Iteration from **Left-to-Right**
+
+      - **BS170 (Traditional)** <br>
+      ```
+       [ Curved Side ]
+        D     G     S
+        |     |     |
+      Drain-Gate-Source
+        [ Flat Side]
+      ```
+      > __NOTE:__ Iteration from **Left-to-Right** <br>
+      > __NOTE:__ There's also new kind of **BS170** where some newer model might have the **S-G-D** sequence instead of **D-G-S** sequence.
+
+    - **TO-220 Package (_Squeare/Rectangular shape_)** <br>
+    Standard orientation to determine the pinout for this kind of MOSFET is with the MOSFET **facing towards you** (where you can read the part number) and the **metal tab/heatsink facing away from you** (facing the floor).
+
+    Examples:
+      
+      - **IRF740 (Most Common)** <br>
+      ```
+     [Metal tab/heatsink at back]
+        _________________
+       |                 |
+       |     IRF740      |  <- You read this side
+       |_________________|
+            |   |   |
+            1   2   3
+            |   |   |
+        Gate Drain Source
+      ```
+      > __NOTE:__ For IRF740 specifically: **G-D-S** (Gate-Drain-Source) from left to right.
+
+  * Project wiring
+  And so, for the project, we simply just need to wire it like this:
+  ```
+     +------[BATTERY 3.3V]
+     |
+    [D]
+     |
+     |
+  [2N7000]---[G]--[10k]---[ESP_GPIO]
+     |                                    
+     |                                    
+    [S]                                   
+     |                                    
+     +----------+------[BUTTONS_VCC]----[GND]
+  ```
+  > __NOTE:__ **D** stands for **Drain**, **G** stands for **Gate**, **S** stands for **Source**.
