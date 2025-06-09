@@ -194,3 +194,35 @@ As you can see from the [front view](https://github.com/stdnt-c1/Personal-Projec
 
   + _Live Mode_ <br>
   If switch are set to _bottom_ (live), it requires the ESP32 to be realoded/rebooted mmanually by users through onboard **RST** button to apply the mode switching. Upon mode switch, the serial is blocked and boot are in normal operations, blocking any potential _special_ operations by ESP32 for smoother operations during usage.
+
+* Revised GPIO Pin Assignment (Post-LOG-5)
+Following the design decisions, we have revised the pin planning from the existing [planner](https://github.com/stdnt-c1/Personal-Project/blob/main/plan/PinPlanning.md) into the following configurations:
+```
+| Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                              |
+| ---------------------- | ------------------- | ---------- | -------------- | ----------------------- | ---------------------------------- |
+| **Joystick 1 (Left)**  | VRX                 | GPIO36     | SVP            | ADC1                    | Via voltage divider                |
+|                        | VRY                 | GPIO39     | SVN            | ADC1                    | Via voltage divider                |
+|                        | SW (Button)         | GPIO27     | IO27           | Digital (INPUT\_PULLUP) |                                    |
+| **Joystick 2 (Right)** | VRX                 | GPIO34     | IO34           | ADC1                    | Via voltage divider                |
+|                        | VRY                 | GPIO35     | IO35           | ADC1                    | Via voltage divider                |
+|                        | SW (Button)         | GPIO26     | IO26           | Digital (INPUT\_PULLUP) |                                    |
+| **Push Buttons**       | Button 1            | GPIO32     | IO32           | Digital (INPUT\_PULLUP) | Formerly resistor ladder 1         |
+|                        | Button 2            | GPIO33     | IO33           | Digital (INPUT\_PULLUP) | Formerly resistor ladder 2         |
+|                        | Button 3            | GPIO0      | IO0            | Digital (INPUT\_PULLUP) | Safe if pulled HIGH at boot        |
+|                        | Button 4            | GPIO2      | IO2            | Digital (INPUT\_PULLUP) | Safe if pulled HIGH at boot        |
+|                        | Button 5            | GPIO4      | IO4            | Digital (INPUT\_PULLUP) |                                    |
+|                        | Button 6            | GPIO5      | IO5            | Digital (INPUT\_PULLUP) |                                    |
+|                        | Button 7            | GPIO15     | TD0            | Digital (INPUT\_PULLUP) | Newly added from available pool    |
+|                        | Button 8            | GPIO13     | TCK            | Digital (INPUT\_PULLUP) | Newly added from available pool    |
+| **OLED Display**       | SDA                 | GPIO21     | IO21           | I2C                     |                                    |
+|                        | SCL                 | GPIO22     | IO22           | I2C                     |                                    |
+| **NRF24L01+PA/LNA**    | CE                  | GPIO16     | IO16           | Digital                 |                                    |
+|                        | CSN                 | GPIO17     | IO17           | Digital                 |                                    |
+|                        | MOSI                | GPIO23     | IO23           | SPI                     |                                    |
+|                        | MISO                | GPIO19     | IO19           | SPI                     |                                    |
+|                        | SCK                 | GPIO18     | IO18           | SPI                     |                                    |
+| **Buzzer**             | PWM Output          | GPIO25     | IO25           | PWM Digital Output      |                                    |
+| **Mode Switch**        | Program/Live toggle | GPIO14     | TMS            | Digital (INPUT\_PULLUP) | Requires manual reset after change |
+```
+
+With this, we've used up all of our **Safe General-purpose GPIO** pins available for the project, and any further add-ons or implementation to be physically added should involve **I2C IO Expander** or **Shift Register** to control the extra I/O. For this project, it's enough of them. What's left now os to review again the planning and start the actual implementation as per our considerations and modification, but for today, i will stop here since i need to gather the requirements first.
