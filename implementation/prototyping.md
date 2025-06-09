@@ -1,7 +1,9 @@
 # Actual Implementation Approach
 
-<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/back-view.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
-<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/front-view.jpg" alt="Joystick Core Prototype - FORNT" width="35%" height="35%">
+<p align="center">
+  <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/back-view.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
+  <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/front-view.jpg" alt="Joystick Core Prototype - FORNT" width="35%" height="35%">
+</p>
 
 - From the given [back view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/back-view.jpg), It's an prototype i've made on the protoboard, it has the **NRF24L01+PA/LNA** module along with the 220uF 16V capacitor in between the 3.3V and GND pin. <br>
 - The **ESP32 Mini Kit** pins also made into a breakout with 2.200uF 16V capacitor between the 3.3V and GND pin as an additonal bulk capacitor. <br>
