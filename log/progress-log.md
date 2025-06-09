@@ -197,6 +197,7 @@ As you can see from the [front view](https://github.com/stdnt-c1/Personal-Projec
 
 * Revised GPIO Pin Assignment (Post-LOG-5)
 Following the design decisions, we have revised the pin planning from the existing [planner](https://github.com/stdnt-c1/Personal-Project/blob/main/plan/PinPlanning.md) into the following configurations:
+
 | Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                              |
 | ---------------------- | ------------------- | ---------- | -------------- | ----------------------- | ---------------------------------- |
 | **Joystick 1 (Left)**  | VRX                 | GPIO36     | SVP            | ADC1                    | Via voltage divider                |
