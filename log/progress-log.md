@@ -195,7 +195,7 @@ As you can see from the [front view](https://github.com/stdnt-c1/Personal-Projec
   + _Live Mode_ <br>
   If switch are set to _bottom_ (live), it requires the ESP32 to be realoded/rebooted mmanually by users through onboard **RST** button to apply the mode switching. Upon mode switch, the serial is blocked and boot are in normal operations, blocking any potential _special_ operations by ESP32 for smoother operations during usage.
 
-* Revised GPIO Pin Assignment (Post-LOG-5)
+* Revised GPIO Pin Assignment (Post-LOG-5) <br>
 Following the design decisions, we have revised the pin planning from the existing [planner](https://github.com/stdnt-c1/Personal-Project/blob/main/plan/PinPlanning.md) into the following configurations:
 
 | Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                              |
@@ -326,7 +326,7 @@ Based on that list, we'll use **2N7000** since it's more fitting, you can use th
   ```
   > __NOTE:__ **D** stands for **Drain**, **G** stands for **Gate**, **S** stands for **Source**.
 
-* Revised GPIO Pin Assignment
+* Revised GPIO Pin Assignment (Post-LOG-6)
   
 | Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                                      |
 | ---------------------- | ------------------- | ---------- | -------------- | ----------------------- | ------------------------------------------ |
@@ -353,3 +353,5 @@ Based on that list, we'll use **2N7000** since it's more fitting, you can use th
 |                        | SCK                 | GPIO18     | IO18           | SPI                     |                                            |
 | **Buzzer**             | PWM Output          | GPIO25     | IO25           | Digital (PWM)           |                                            |
 | **Button Power Gate**  | IRF740 Gate Control | GPIO14     | TMS            | Digital (Output)        | Enables button power after boot            |
+
+With this, i concluded that the project is ready for physical implementation.
