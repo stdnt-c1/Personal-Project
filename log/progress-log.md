@@ -170,3 +170,27 @@ By wiring both **Electrolytic Capacitor** and **Ceramic Capacitor** in parallel 
 
 * ESP32 central capacitor filter <br>
 Current ESP32 state is as shown in the [picture](https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/wiring.jpg), and if our RF module has extra ceramic capacitor, so why wouldn't we apply the same to the bulk capacitor on our ESP32? And so i did add another **100nF 50V** in parallel, the same wiring as the RF module.
+
+## LOG-5 | 09/06/25 | Input Exclusions
+* Input Exclusions <br>
+Been prototyping for a while, and now i realizes that i can't put the trigger anywhere, so i choose to opt-out the trigger function. Instead, we'll refine the available input. Currently i've contructed the base as follows:
+
+> Joystick from above
+<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/joystick-above.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
+
+> Joystick from below
+<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/joystick-below.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
+
+> Joystick from side
+<img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/joystick-side.jpg" alt="Joystick Core Prototype - BACK" width="35%" height="35%">
+
+* Input Refinement <br>
+Following the modifications, i also wanted to refine the button resistor-ladder layout, since we've opted out 4 trigger buttons, it means we also gained 4 extra GPIO. Utilizing the gained GPIO pins available, we will cancel the ladder pin and instead wired individually each buttons to the GPIO, allowing simulatenous input from all the buttons for comforts.
+
+* Mode Switch <br>
+As you can see from the [front view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/prototype/front-view.jpg) of our joystick core near the buzzer, there's a **switch** that we planned to be used as switch mode between _Program_ and _Live Mode_, where the function are as follows:
+  + _Program Mode_ <br>
+  If switch are set to _top_ (program), it requires the ESP32 to be reloaded/rebooted manually by users through onboard **RST** button to apply the mode switching. Upon mode switch, the users can't use any of the inputs, and is required to wire onto a computer for serial debugging, this also allows for granular control when attempting modifications and uploads/testing safely.
+
+  + _Live Mode_ <br>
+  If switch are set to _bottom_ (live), it requires the ESP32 to be realoded/rebooted mmanually by users through onboard **RST** button to apply the mode switching. Upon mode switch, the serial is blocked and boot are in normal operations, blocking any potential _special_ operations by ESP32 for smoother operations during usage.
