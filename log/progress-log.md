@@ -363,7 +363,7 @@ Previously we have covered all the fixes and implementation, attempting revision
   + Controller and Breakout <br>
   <p align="center">
     <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back-view.jpg" alt="Controller Back view" width="35%" height="35%">
-    <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_top-view.jpg" alt="Controller Top View" width="35%" height="35%">
+    <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_top-view.jpg" alt="Controller Top View" width="30%" height="30%">
   </p>
 
   The above pictures are the current progress and condition. As shown in the [controller top view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_top-view.jpg) of the conntroller, i've resolved to use combined button layout of cross/D-pad and Linear layout, but as i said before, it depends on personal preferences. Currently i've oonly traced the line into a breakout, as shown in [controller back view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back-view.jpg), all the buttons VCC are combined into 1 pads, each pads as shown at the [middle section](https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back_middle.jpg) are defined as follows:
@@ -393,8 +393,8 @@ Previously we have covered all the fixes and implementation, attempting revision
   | JOY\_GND    | 5v GROUND   |
 
   + MOSFET Refinement <br>
-  Previous i did mentioned that i'lll use **2N7000** Transistor, but actually i ended up using **IRF740** which are more extremely common. The application cam be seen in [back-top view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back_top.jpg) image, as follows:
+  Previous i did mentioned that i'lll use **2N7000** Transistor, but actually i ended up using **IRF740** which are more extremely common. The application cam be seen in [back-top view](https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back_top.jpg) image, as follows: <br>
   <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back_top.jpg" alt="Controller Top View" width="35%" height="35%">
 
-  In addition to that, here's some view of the controller with the battery shield:
+  In addition to that, here's some view of the controller with the battery shield: <br>
   <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back-view-shield.jpg" alt="Controller Top View" width="35%" height="35%">
