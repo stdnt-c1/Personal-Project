@@ -398,3 +398,110 @@ Previously we have covered all the fixes and implementation, attempting revision
 
   In addition to that, here's some view of the controller with the battery shield: <br>
   <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/post-revision/controller_back-view-shield.jpg" alt="Controller Top View" width="35%" height="35%">
+
+## LOG-8 | 17/06/25 | Setup and Hwardware Reiteration
+
+<!-- 
+→ ← ↑ ↓       Basic arrows
+⟶ ⟵ ⟷      Long arrows  
+➜ ➤ ➨ ➪    Fancy arrows
+⇒ ⇐ ⇑ ⇓      Double arrows
+↗ ↘ ↙ ↖      Diagonal arrows
+
+┌─┐ ┬ ┐       Top connections
+├─┤ ┼ ┤       Middle connections  
+└─┘ ┴ ┘       Bottom connections
+╔═╗ ╦ ╗       Double-line boxes
+╠═╣ ╬ ╣       Double-line connections
+╚═╝ ╩ ╝       Double-line bottom
+
+──  │ Ω
+-->
+
++ ESP32 Mini Kit Extra Bulk Capacitance and Filter <br>
+```
+
+       ESP_3V3_VCC
+            ↓
+            │
+            ├──────────────────────┐
+            |                      |
+  2200uF 16v Electrolytic    100nF 50v Ceramic
+            |                      |
+            ├──────────────────────┘
+            |
+            ↓
+         ESP_GND
+
+```
+
++ NRF24L01+PA/LNA Power filtration and protection <br>
+```
+   3.3v ┌────────────────┬────────────────┬──────────← ESP_3V3_VCC 
+        |                |                |
+        |                |                |
+  NRF24L01+PA/LNA     220uF 16v       100nF 50v   
+        |            Electrolytic      Ceramic
+        |                |                |
+    GND └────────────────┴────────────────┴──────────→ ESP_GND
+
+```
+
++ IRF740 Button Power Control/Isolator
+```
+                 
+                  ┌─────────────────────→ VCC_OUT (Button Power)
+                  |
+                Source
+                  |
+  IRF740 MOSFET ──┼── Drain ────────────← VCC_IN (Button Power)
+                  |
+                 Gate
+                  |
+                  └─────── 10Ω 1/4w ────← ESP_GPIO
+```
+
++ Passive Buzzer
+```
+    ┌───────← ESP_GPIO
+    |
+  BUZZER
+    |
+    └───────→ ESP_GND
+```
+
++ Buttons
+```
+
+  ┌───← VCC_IN ← IRF740 Gate
+  |
+  ├─ R_BUTTON_1 ───────→ ESP_GPIO
+  ├─ R_BUTTON_2 ───────→ ESP_GPIO
+  ├─ R_BUTTON_3 ───────→ ESP_GPIO
+  └─ R_BUTTON_4 ───────→ ESP_GPIO
+
+  ┌───← VCC_IN ← IRF740 Gate
+  |
+  ├─ L_BUTTON_1 ───────→ ESP_GPIO
+  ├─ L_BUTTON_2 ───────→ ESP_GPIO
+  ├─ L_BUTTON_3 ───────→ ESP_GPIO
+  └─ L_BUTTON_4 ───────→ ESP_GPIO
+
+```
+
++ KY-023 Joystick and Voltage Divider
+```
+
+                                                                   ┌─── 20kΩ 1/4w ──→ ESP_GND
+                                                                   |
+  SHIELD_5V_VCC →────────┐            ┌─── SW ──── 10kΩ 1/4w ──→ ESP_GPIO 
+                         |            |
+                         |            |                            ┌─── 20kΩ 1/4w ──→ ESP_GND
+                         ↓            |                            |
+                    KY-023 JOYSTICK ──┼─── VRX ─── 10kΩ 1/4w ──→ ESP_GPIO
+                         |            |
+                         |            |                            ┌─── 20kΩ 1/4w ──→ ESP_GND
+                         ↓            |                            |
+  SHIELD_5V_GND ←────────┘            └─── VRY ─── 10kΩ 1/4w ──→ ESP_GPIO
+                                    
+```
