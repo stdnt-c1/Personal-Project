@@ -1,4 +1,4 @@
-# ESP32 Mini Kit has these following pin
+# ESP32 Mini Kit Pin Planning - Updated (Post-LOG-6)
 
 <img src="https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png" alt="ESP32 Mini Kit" width="35%" height="35%">
 
@@ -20,7 +20,7 @@
 | SD0 | SD3 |
 
 > __Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png). <br>
-> __Note:__ The highlighted pin are adapted `D1 MINI` default pinout to ensure compatbility with their shields. 
+> __Note:__ The highlighted pin are adapted `D1 MINI` default pinout to ensure compatibility with their shields. 
 
 ## Outer Side
 
@@ -68,82 +68,127 @@ The ESP32 Mini Kit uses simplified labels for many GPIO pins. Here's what they a
 - **TXD/RXD (GPIO1/3)** are used for serial communication. Avoid using them unless you disable serial output.
 - **TDI (GPIO12)** is a strapping pin that affects boot mode. Use with caution or avoid entirely.
 
-## Pin Mapping
+## Current Pin Assignment (Post-LOG-6 Implementation)
 
-| Component         | Pin Functions          | ESP32 GPIO | Mini Kit GPIO | Type                      | Notes                                                                               |
-| :---------------- | :--------------------- | :--------- | :------------ | :------------------------ | :---------------------------------------------------------------------------------- |
-| **OLED Display** | SDA                    | **GPIO21** | IO21          | I2C                       | The OLED display is a shield. Connect to these I2C pins.                            |
-|                   | SCL                    | **GPIO22** | IO22          | I2C                       |                                                                                     |
-| **NRF24L01+PA/LNA** | MOSI                   | **GPIO23** | IO23          | SPI                       | HSPI MOSI                                                                           |
-|                   | MISO                   | **GPIO19** | IO19          | SPI                       | HSPI MISO                                                                           |
-|                   | SCK                    | **GPIO18** | IO18          | SPI                       | HSPI SCK                                                                            |
-|                   | CSN                    | **GPIO17** | IO17          | Digital                   |                                                                                     |
-|                   | CE                     | **GPIO16** | IO16          | Digital                   |                                                                                     |
-| **Joystick 1 (Left)** | VR\_X                  | **GPIO36** | SVP           | ADC                       | Input-only. *Requires 5V to 3.3V voltage divider.* |
-|                   | VR\_Y                  | **GPIO39** | SVN           | ADC                       | Input-only. *Requires 5V to 3.3V voltage divider.* |
-|                   | SW (Button)            | **GPIO27** | IO27          | Digital (Pull-up to GND)  | Use internal pull-up. Safe GPIO on outer left side.                                |
-| **Joystick 2 (Right)** | VR\_X                  | **GPIO34** | IO34          | ADC                       | Input-only. *Requires 5V to 3.3V voltage divider.* |
-|                   | VR\_Y                  | **GPIO35** | IO35          | ADC                       | Input-only. *Requires 5V to 3.3V voltage divider.* |
-|                   | SW (Button)            | **GPIO26** | IO26          | Digital (Pull-up to GND)  | Use internal pull-up.                                                               |
-| **Buttons (Ladder 1)** | Analog Input           | **GPIO32** | IO32          | ADC                       | 4 buttons via resistor ladder. Use internal pull-up.                                |
-| **Buttons (Ladder 2)** | Analog Input           | **GPIO33** | IO33          | ADC                       | 4 buttons via resistor ladder. Use internal pull-up.                                |
-| **Trigger 1** | Digital Input          | **GPIO0** | IO0           | **NO** (Pull-up to GND)   | Strapping pin. Stays HIGH at boot. Connect to the **NO** side of the trigger.       |
-| **Trigger 2** | Digital Input          | **GPIO2** | IO2           | **NO** (Pull-up to GND)   | Strapping pin. Stays HIGH at boot. Connect to the **NO** side of the trigger.       |
-| **Trigger 3** | Digital Input          | **GPIO4** | IO4           | **NO** (Pull-up to GND)   | Safe GPIO for digital input. Connect to the **NO** side of the trigger.             |
-| **Trigger 4** | Digital Input          | **GPIO5** | IO5           | **NC** (Pull-up to GND)   | Safe GPIO. Can be configured for NC connection. Available on inner right side.      |
-| **Passive Buzzer** | Digital Output (PWM)   | **GPIO25** | IO25          | Digital (Output)          | Safe general-purpose GPIO for PWM.                                                  |
+| Component              | Function            | ESP32 GPIO | Mini Kit Label | Type                    | Notes                                      |
+|:---------------------- |:------------------- |:---------- |:-------------- |:----------------------- |:------------------------------------------ |
+| **Joystick 1 (Left)**  | VRX                 | **GPIO36** | **SVP**        | ADC1                    | Voltage divider required (0–5V → 0–3.3V)  |
+|                        | VRY                 | **GPIO39** | **SVN**        | ADC1                    | Voltage divider required                   |
+|                        | SW                  | **GPIO27** | **IO27**       | Digital (INPUT_PULLUP)  |                                            |
+| **Joystick 2 (Right)** | VRX                 | **GPIO34** | **IO34**       | ADC1                    | Voltage divider required                   |
+|                        | VRY                 | **GPIO35** | **IO35**       | ADC1                    | Voltage divider required                   |
+|                        | SW                  | **GPIO26** | **IO26**       | Digital (INPUT_PULLUP)  |                                            |
+| **Push Buttons**       | Button 1            | **GPIO32** | **IO32**       | Digital (INPUT_PULLUP)  | Individual GPIO (no ladder)                |
+|                        | Button 2            | **GPIO33** | **IO33**       | Digital (INPUT_PULLUP)  | Individual GPIO (no ladder)                |
+|                        | Button 3            | **GPIO0**  | **IO0**        | Digital (INPUT_PULLUP)  | Strapping pin – protected by MOSFET gating |
+|                        | Button 4            | **GPIO2**  | **IO2**        | Digital (INPUT_PULLUP)  | Strapping pin – protected by MOSFET gating |
+|                        | Button 5            | **GPIO4**  | **IO4**        | Digital (INPUT_PULLUP)  |                                            |
+|                        | Button 6            | **GPIO5**  | **IO5**        | Digital (INPUT_PULLUP)  |                                            |
+|                        | Button 7            | **GPIO15** | **TD0**        | Digital (INPUT_PULLUP)  | Newly utilized                             |
+|                        | Button 8            | **GPIO13** | **TCK**        | Digital (INPUT_PULLUP)  | Newly utilized                             |
+| **OLED Display**       | SDA                 | **GPIO21** | **IO21**       | I2C                     |                                            |
+|                        | SCL                 | **GPIO22** | **IO22**       | I2C                     |                                            |
+| **NRF24L01+PA/LNA**    | CE                  | **GPIO16** | **IO16**       | Digital                 |                                            |
+|                        | CSN                 | **GPIO17** | **IO17**       | Digital                 |                                            |
+|                        | MOSI                | **GPIO23** | **IO23**       | SPI                     |                                            |
+|                        | MISO                | **GPIO19** | **IO19**       | SPI                     |                                            |
+|                        | SCK                 | **GPIO18** | **IO18**       | SPI                     |                                            |
+| **Buzzer**             | PWM Output          | **GPIO25** | **IO25**       | Digital (PWM)           |                                            |
+| **Button Power Gate**  | MOSFET Gate Control | **GPIO14** | **TMS**        | Digital (Output)        | Controls IRF740 for button power isolation |
 
-**Explanation of "Mini Kit GPIO" Column:**
+## Hardware Protection Implementation
 
-* For pins like `GPIO21`, `GPIO22`, `GPIO17`, `GPIO16`, etc., they are directly labeled as `IO21`, `IO22`, `IO17`, `IO16` on the inner/outer sides of Mini Kit.
-* `GPIO36` is labeled `SVP` on inner side.
-* `GPIO39` is labeled `SVN` on outer side.
-* `GPIO34` is labeled `IO34` on outer side.
-* `GPIO35` is labeled `IO35` on outer side.
-* `GPIO32` is labeled `IO32` on outer side.
-* `GPIO33` is labeled `IO33` on outer side.
-* `GPIO0` is labeled `IO0` on outer side.
-* `GPIO2` is labeled `IO2` on outer side.
-* `GPIO4` is labeled `IO4` on outer side.
-* `GPIO25` is labeled `IO25` on outer side.
-* `GPIO27` is labeled `IO27` on outer side.
-* `GPIO5` is labeled `IO5` on inner side.
+### Button Power Gating (LOG-6 Innovation)
+All button VCC lines are controlled through an **IRF740 N-channel MOSFET** to prevent boot interference:
 
-## Available Pins for Future Use
+```
+VCC_IN ──┬─── IRF740 Drain ───→ VCC_OUT (All Button Power)
+         │
+         └─── Source ──→ GND
+              │
+              Gate ←── 10Ω Resistor ←── GPIO14 (TMS)
+```
 
-These pins are still available on your Mini Kit for additional components:
+**Protection Logic:**
+- **Boot Phase**: GPIO14 = LOW → MOSFET OFF → Buttons isolated
+- **Runtime Phase**: GPIO14 = HIGH → MOSFET ON → Buttons powered
 
-| ESP32 GPIO | Mini Kit Label | Location | Pin Type | Recommended Use | Notes |
-|:-----------|:---------------|:---------|:---------|:----------------|:------|
-| **GPIO15** | **TD0** | Inner Left | Digital I/O | General purpose, PWM, ADC2_CH3 | Safe for most applications |
-| **GPIO13** | **TCK** | Inner Right | Digital I/O | General purpose, PWM, ADC2_CH4 | Safe for most applications |
-| **GPIO14** | **TMS** | Outer Right | Digital I/O | General purpose, PWM, ADC2_CH6 | Safe, avoid if using JTAG debugging |
+This eliminates strapping pin interference from GPIO0 and GPIO2 during ESP32 boot sequence.
 
-### ⚠️ Pins to Avoid:
+### Voltage Dividers for Joystick Inputs
+All joystick analog outputs (VRX/VRY) use **10kΩ + 20kΩ** voltage dividers:
 
-| ESP32 GPIO | Mini Kit Label | Location | Why to Avoid |
-|:-----------|:---------------|:---------|:-------------|
-| **GPIO12** | **TDI** | Outer Left | **Strapping pin** - affects boot voltage. Can cause boot failures if pulled HIGH at startup |
-| **GPIO6-11** | **CLK, SD0-3, CMD** | Various | **Connected to internal flash** - using these will brick your ESP32 |
-| **GPIO1** | **TXD** | Inner Left | **UART TX** - needed for serial communication/debugging |
-| **GPIO3** | **RXD** | Inner Left | **UART RX** - needed for serial communication/debugging |
+```
+Joystick_Output (0-5V)
+       │
+     [10kΩ]  ← R1
+       │
+     [GPIO]  ← ESP32 ADC Input (0-3.3V)
+       │
+     [20kΩ]  ← R2
+       │
+      GND
+```
+
+### Power Filtering
+**ESP32 Bulk Capacitance:**
+- 2200µF 16V Electrolytic + 100nF 50V Ceramic in parallel
+
+**NRF24L01 Protection:**
+- 2200µF 16V Electrolytic + 100nF 50V Ceramic in parallel
+- Prevents RF module brownout and filters power noise
+
+## Major Changes from Original Planning
+
+### ❌ **Removed Features:**
+- **Resistor Ladder Inputs**: Replaced with individual GPIO assignments for simultaneous button presses
+- **Trigger Buttons**: Eliminated due to mechanical constraints  
+- **Manual Program/Live Mode Switch**: Replaced with automatic MOSFET gating
+
+### ✅ **Added Features:**  
+- **Hardware Button Isolation**: IRF740 MOSFET prevents boot interference
+- **Individual Button GPIOs**: All 8 buttons have dedicated pins
+- **Enhanced Power Filtering**: Dual-capacitor setup for both ESP32 and NRF24L01
+- **Automatic Boot Protection**: No user intervention required for safe operation
+
+### 🔄 **Pin Reassignments:**
+- **GPIO14**: Changed from unused to **Button Power Gate Control**
+- **GPIO15 & GPIO13**: Activated for **Button 7 & 8**
+- **GPIO32 & GPIO33**: Changed from **ADC Ladder** to **Individual Button** inputs
 
 ## Pin Usage Summary
 
-### Currently Used Pins:
-- **Inner Side**: IO21 (SDA), IO22 (SCL), IO17 (CSN), IO16 (CE), IO26 (Joy2 SW), IO5 (Trigger4)
-- **Outer Side**: SVP (Joy1 X), SVN (Joy1 Y), IO34 (Joy2 X), IO35 (Joy2 Y), IO32 (Buttons1), IO33 (Buttons2), IO0 (Trigger1), IO2 (Trigger2), IO4 (Trigger3), IO25 (Buzzer), IO27 (Joy1 SW)
-- **SPI Pins**: IO23 (MOSI), IO19 (MISO), IO18 (SCK)
+### Currently Used Pins: **19/30 Available**
+- **ADC Inputs (4)**: GPIO36, GPIO39, GPIO34, GPIO35 (Joystick axes)
+- **Digital Inputs (10)**: GPIO27, GPIO26, GPIO32, GPIO33, GPIO0, GPIO2, GPIO4, GPIO5, GPIO15, GPIO13 (Buttons & Joystick switches)
+- **Digital Outputs (2)**: GPIO25 (Buzzer), GPIO14 (Button Gate)
+- **I2C (2)**: GPIO21 (SDA), GPIO22 (SCL)
+- **SPI (3)**: GPIO18 (SCK), GPIO19 (MISO), GPIO23 (MOSI), GPIO16 (CE), GPIO17 (CSN)
 
-### Available for Expansion:
-- **TD0 (GPIO15)** - Inner Left
-- **TCK (GPIO13)** - Inner Right  
-- **TMS (GPIO14)** - Outer Right
+### Available for Future Expansion: **0 Safe Pins**
+All safe, general-purpose GPIO pins are now utilized. Future expansion would require:
+- **I2C GPIO Expander** (PCF8574, MCP23017)
+- **SPI Shift Registers** (74HC595 for outputs, 74HC165 for inputs)
+- **Alternative communication pins** (if UART/JTAG debugging not needed)
 
-### Total Pin Count:
-- **Used**: 16 pins
-- **Available**: 3 pins
-- **Avoid**: 7 pins (strapping/flash/UART)
+### Pins Avoided: **7 Pins**
+- **GPIO1, GPIO3**: UART TX/RX (Serial communication)
+- **GPIO6-11**: Flash interface (DO NOT USE - will brick ESP32)
+- **GPIO12**: Strapping pin (TDI - boot voltage selection)
 
-> __Note:__ For the missing/unsigned Mini Kit GPIO, you can use any generally safe pins from the available list above. <br>
-> __Note:__ Refer to [image](https://github.com/stdnt-c1/Personal-Project/blob/main/images/miniKit-pinout.png).
+## Bootup Safety Notes
+
+**Strapping Pin Management:**
+- **GPIO0**: Used for Button 3 – Safe due to MOSFET isolation during boot
+- **GPIO2**: Used for Button 4 – Safe due to MOSFET isolation during boot  
+- **GPIO12**: **AVOIDED** – Critical strapping pin for boot voltage
+- **GPIO15**: Used for Button 7 – Safe (internal pull-up OK)
+
+**Boot Sequence:**
+1. ESP32 powers up with GPIO14 = LOW (default)
+2. IRF740 gate LOW → All buttons disconnected
+3. ESP32 completes boot without strapping pin interference  
+4. Firmware sets GPIO14 = HIGH → Buttons become active
+5. Normal operation begins
+
+This implementation ensures **100% reliable boot** regardless of button states during power-on.

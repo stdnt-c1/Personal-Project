@@ -1,149 +1,209 @@
-# ESP32-based Joystick Project
-
-## Overview
-This project outlines the design and planning of a **custom-built ESP32-based joystick** controller intended for versatile applications—ranging from gaming to RC control. It features analog joystick modules, button inputs, wireless communication, and onboard feedback through display and sound.
-
-**Note:** This project is currently in the *planning and prototyping phase*. All physical prototyping is being done using **protoboards**, so comfort and layout are optimized for personal usability.
-
----
-
-## ⚙️ Components List
-
-### Core Modules
-- **1x ESP32 MINI Kit** – Main MCU
-- **2x KY-023 Joystick Module** – Dual-axis analog joystick + button
-- **8x Push Buttons** – General input
-- **4x Limit Switches** – Used as triggers
-- **1x 18650 Battery Shield** – Dual-voltage output (3.3V and 5V)
-- **2x 18650 Batteries** – Main power source
-- **1x 0.66" OLED Display Shield** – Data/graphics display
-- **1x NRF24L01+PA/LNA RF Module** – 2.4GHz wireless communication
-- **1x Passive Buzzer** – PWM-based audio feedback
-- **1x 2S Battery Indicator** – For battery level visibility
-
-### Support Components
-- **Capacitors:**
-  - 1x 2200µF 16V (bulk smoothing for ESP32)
-  - 1x 220µF 16V (decoupling for RF module)
-  - Multiple 10nF / 100nF / 22pF (Tantalum and Ceramic for RF/ESP32 decoupling)
-- **Diodes:**
-  - Multiple 1N4148 (protection for RF module)
-- **Resistors:**
-  - Metal Film Resistors (1/4W): used for voltage division, pull-up/pull-downs, and resistor ladder matrix
+# ESP32 Dual Joystick Wireless Controller  
+![Version](https://img.shields.io/badge/version-v1.0.3-blue)  
+![Status](https://img.shields.io/badge/status-Hardware_Complete-green)  
+![License](https://img.shields.io/badge/license-MIT-green)  
+![ESP32](https://img.shields.io/badge/platform-ESP32-blueviolet)  
+![DIY](https://img.shields.io/badge/type-Hardware--Project-informational)
 
 ---
 
-## 🔌 Circuit Design
+## 🎮 Project Overview
 
-### Joystick Module Input Handling
-The **KY-023** joystick operates at 5V but the ESP32 runs on 3.3V. Each joystick has **3 outputs** (VRX, VRY, SW). Instead of level-shifting with dividers on the power line, each signal output is protected using resistors (and optionally a diode):
+A **custom-built ESP32-based dual joystick wireless controller** designed from scratch for gaming, robotics control, and wireless input experimentation. This project showcases advanced hardware prototyping with careful consideration for power management, signal integrity, and ergonomic design.
 
+### Key Features
+- **Dual analog joysticks** with push-button functionality
+- **8 individual digital buttons** with simultaneous input capability
+- **Wireless NRF24L01+ communication** for reliable data transmission  
+- **OLED display** for real-time status and feedback
+- **Smart power management** with boot-safe button isolation
+- **Ergonomic perfboard design** optimized for comfortable gameplay
+- **Robust power filtering** for stable RF operation
+
+---
+
+## 🚀 What Makes This Special
+
+### Advanced Hardware Solutions
+- **🔒 Boot Protection**: IRF740 MOSFET gating prevents GPIO conflicts during ESP32 startup
+- **⚡ Power Conditioning**: Multi-stage filtering (2200µF + 100nF) for clean RF operation  
+- **📏 Voltage Scaling**: Proper 5V→3.3V dividers for joystick analog inputs
+- **🎯 Individual GPIO Mapping**: Every button gets its own pin for simultaneous inputs
+
+### Smart Design Decisions
+- **Eliminated resistor ladders** in favor of direct GPIO mapping
+- **Strategic pin selection** avoiding ESP32 boot-strapping conflicts
+- **Optimized ergonomics** with joysticks positioned above buttons
+- **Linear button layout** for natural thumb movement patterns
+
+---
+
+## ⚙️ Hardware Architecture
+
+### Core Components
+| Component | Purpose | Key Specs |
+|-----------|---------|-----------|
+| **ESP32 MINI Kit** | Main MCU | 240MHz dual-core, WiFi/BLE |
+| **2× KY-023 Joysticks** | Analog input | Dual-axis + push-button |
+| **8× Push Buttons** | Digital inputs | Individual GPIO mapping |
+| **IRF740 MOSFET** | Boot protection | VCC gating for safe startup |
+| **NRF24L01+PA/LNA** | Wireless comm | Long-range RF transceiver |
+| **0.66" OLED Display** | Status feedback | I²C interface |
+| **Passive Buzzer** | Audio alerts | PWM-driven |
+| **Dual 18650 + Shield** | Power system | 5V/3.3V regulated output |
+
+### Power & Signal Conditioning
+- **Multi-stage filtering**: 2200µF electrolytic + 100nF ceramic capacitors
+- **ESD protection**: 1N4148 diodes on sensitive inputs  
+- **Voltage dividers**: 10kΩ/20kΩ for 5V→3.3V joystick scaling
+- **Pull-up networks**: Proper input conditioning for all digital pins
+
+---
+
+## 🔌 GPIO Pin Mapping
+
+| Function | ESP32 GPIO | Type | Notes |
+|----------|------------|------|-------|
+| **Left Joystick** | | | |
+| ├─ VRX | GPIO36 (SVP) | ADC1 | Via voltage divider |
+| ├─ VRY | GPIO39 (SVN) | ADC1 | Via voltage divider |
+| └─ SW | GPIO27 | Digital | Pull-up enabled |
+| **Right Joystick** | | | |
+| ├─ VRX | GPIO34 | ADC1 | Via voltage divider |
+| ├─ VRY | GPIO35 | ADC1 | Via voltage divider |
+| └─ SW | GPIO26 | Digital | Pull-up enabled |
+| **Push Buttons** | | | |
+| ├─ Button 1-2 | GPIO32, 33 | Digital | Former ladder inputs |
+| ├─ Button 3-4 | GPIO0, 2 | Digital | **Boot-safe via MOSFET** |
+| └─ Button 5-8 | GPIO4,5,15,13 | Digital | Standard inputs |
+| **Peripherals** | | | |
+| ├─ OLED (SDA/SCL) | GPIO21, 22 | I²C | Status display |
+| ├─ NRF24 (CE/CSN) | GPIO16, 17 | Digital | RF control |
+| ├─ NRF24 (SPI) | GPIO18,19,23 | SPI | Data interface |
+| ├─ Buzzer | GPIO25 | PWM | Audio feedback |
+| └─ **Button Gate** | GPIO14 | Output | **MOSFET control** |
+
+---
+
+## 🛡️ Boot Protection System
+
+**Problem**: ESP32 GPIOs like GPIO0 and GPIO2 are boot-strapping pins - pulling them LOW during startup can prevent normal boot.
+
+**Solution**: Hardware-gated button power using IRF740 MOSFET:
+
+```cpp
+#define BTN_POWER_GATE 14
+
+void setup() {
+  pinMode(BTN_POWER_GATE, OUTPUT);
+  digitalWrite(BTN_POWER_GATE, LOW);  // Buttons OFF during boot
+  delay(500);                          // Allow clean startup
+  digitalWrite(BTN_POWER_GATE, HIGH); // Enable all buttons
+}
 ```
 
-[+5V]           [GND]
-  |               |  
-  |              [1k]
-  |               |  
-  +---------------+  
-  |               |  
-  |               |  
-  |KY-023 Joystick|  
-  |               |  
-  |               |  
-  ++------+------++  
-   |      |      |   
- [VRX]  [VRY]   [SW] 
-   |      |      |   
-  [2k]   [2k]   [2k] 
-   |      |      |   
-  [D]    [D]    [D]  -> Optional Diode
-   |      |      |
- [GPIO] [GPIO] [GPIO]
+This ensures **zero interference** with ESP32 boot sequence while maintaining full button functionality during operation.
 
+---
+
+## 🔧 Circuit Highlights
+
+### Joystick Voltage Scaling
+```
+KY-023 Output (0-5V) ──[10kΩ]── GPIO ──[20kΩ]── GND
+                                  ↑
+                              (0-3.3V safe)
 ```
 
-This setup ensures signal compatibility and adds protection, while maintaining full functionality.
-
----
-
-### Button Matrix via Resistor Ladder
-Due to limited GPIOs, **buttons are grouped** into two analog-input ladders (4 buttons per thumb). Ergonomically, this makes sense as thumbs typically activate one button at a time.
-
+### RF Power Conditioning  
+```
+VCC ──┬──[2200µF]──┬── NRF24L01+
+      └──[100nF]───┘
+      ↑              ↑
+   Bulk storage   Noise filter
 ```
 
-     [3.3V]
-       |
-       +---[Button 1]---[1k]---+
-       |                       |
-       +---[Button 2]---[2.2k]-+
-       |                       |
-       +---[Button 3]---[3.3k]-+----> [Analog Input Pin]
-       |                       |
-       +---[Button 4]---[4.7k]-+
-                               |
-                             [10k]
-                               |
-                              GND
-
+### Button Protection
+```
+3.3V ──[IRF740]── Button VCC
+         ↑
+    GPIO14 control
 ```
 
-Each press results in a distinct analog voltage that can be easily distinguished by the ESP32’s ADC.
+---
+
+## 📈 Development Timeline
+
+| Phase | Status | Details |
+|-------|--------|---------|
+| ✅ **Design & Planning** | Complete | Component selection, pin mapping |
+| ✅ **Hardware Prototyping** | Complete | Perfboard layout, component placement |
+| ✅ **Power System Design** | Complete | Voltage regulation, filtering, protection |
+| ✅ **Boot Protection** | Complete | MOSFET gating, safe startup sequence |
+| ✅ **Physical Assembly** | Complete | Soldering, wiring, mechanical assembly |
+| 🔄 **Firmware Development** | In Progress | NRF communication, input handling |
+| 🔜 **UI Implementation** | Upcoming | OLED display, status indicators |
+| 🔜 **Wireless Testing** | Upcoming | Range testing, latency optimization |
 
 ---
 
-### Other Connections
-- **Limit Switches:** Connected directly to digital GPIOs for simultaneous multi-input detection
-- **OLED Display:** I2C interface (ESP32 SDA/SCL)
-- **NRF24L01+ Module:** SPI interface, additional decoupling for power stability
-- **Buzzer:** Connected to a PWM-capable pin
-- **Battery Indicator:** Connected directly to the battery terminals for independent monitoring
+## 🎯 Design Philosophy
+
+### Ergonomics First
+- **Joysticks positioned above buttons** for natural thumb reach
+- **Linear button arrangement** instead of cramped D-pad layouts  
+- **Comfortable grip tested** with real-world usage scenarios
+- **No triggers** - simplified design for better handling
+
+### Electrical Integrity
+- **Individual button GPIOs** eliminate input conflicts
+- **Proper voltage scaling** protects ESP32 from 5V joystick signals
+- **Multi-stage filtering** ensures clean power for sensitive RF circuits
+- **Boot-safe design** prevents startup issues from user inputs
+
+### Maintainable Architecture
+- **Clear pin documentation** for easy modifications
+- **Modular power domains** for safe testing and debugging
+- **Standard components** for easy sourcing and replacement
 
 ---
 
-## 🧠 Ergonomics Considerations
+## 📚 Documentation Structure
 
-This joystick project is designed around **personal hand comfort and control efficiency**, especially for a protoboard implementation. Key ergonomic decisions include:
-
-### ➤ **Joystick–Joystick over Button–Button Configuration**
-- Joysticks are placed **above the buttons**, giving them prominence and full thumb range.
-- This **mirrored dual-stick layout** is designed for potential future RC applications, like tank-style or drone control.
-
-### ➤ **Linear Button Layout**
-- Buttons are arranged **linearly**, rather than in a traditional D-pad/cross format.
-- This reduces **accidental presses** and aligns better with **natural thumb motion arcs**.
-- Each side (left/right thumb) handles 4 buttons via resistor ladders.
-
-### ➤ **Thumb and Finger Reach**
-- **Joysticks are farther forward**, allowing thumb flexibility and reducing cramping during rotational input.
-- **Trigger switches** are individually wired due to the possibility of **simultaneous index finger use**.
-
-These choices are all made with comfort and responsiveness in mind, rather than blindly following industry layout norms.
+```
+├── README.md                 # This overview
+├── progress-log.md           # Detailed development journal  
+├── plan/
+│   ├── PinPlanning.md       # Complete GPIO assignments
+│   └── JoyStickPlan.ino     # Initial firmware framework
+└── logs/
+    ├── LOG-7.md             # Physical assembly photos
+    └── LOG-8.md             # Final wiring and testing
+```
 
 ---
 
-## 🧪 Project Status
+## 🔍 Key Learning Outcomes
 
-**Stage:** 🟡 Planning & Initial Hardware Testing  
-This project will evolve in stages:
-
-1. ✅ Schematic & component planning  
-2. 🛠️ Hardware prototyping on protoboard  
-3. 🔌 GPIO mapping and analog calibration  
-4. 📡 Wireless comms via NRF24L01+  
-5. 🧠 Firmware logic and state handling  
-6. 🔋 Power and battery management  
-7. 🧪 Usability testing and ergonomics tuning  
-8. 🖼️ Optional: PCB design or 3D printed shell
+This project demonstrates:
+- **Advanced ESP32 GPIO management** with boot-strapping considerations
+- **Mixed-signal design** combining analog joysticks with digital controls  
+- **RF circuit design** with proper power conditioning and filtering
+- **Mechanical prototyping** with ergonomic considerations
+- **Power domain isolation** using MOSFET switching circuits
 
 ---
 
-## 📢 Author
+## 👨‍💻 Author
 
-**stndnt-c1**  
-GitHub: [https://github.com/stdnt-c1](https://github.com/stdnt-c1)  
-Project version: **v1.0.1-rev0**  
-Date: **06-05-2025**
+**stndnt-c1** | [GitHub Profile](https://github.com/stdnt-c1)
 
-- [Abstract Planner](plan/JoyStickPlan.ino)
-- [Pin Mapping](plan/PinPlanning.md)
+*"Why buy a controller when you can engineer a better one?"*
+
 ---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the `LICENSE` file for details.
+
+**Hardware designs, circuit schematics, and documentation are freely available for educational and personal use.**
